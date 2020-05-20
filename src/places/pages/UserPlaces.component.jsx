@@ -10,8 +10,8 @@ const DUMMY_PLACES = [
         imageUrl: 'https://untappedcities.com/wp-content/uploads/2015/07/Flatiron-Building-Secrets-Roof-Basement-Elevator-Sonny-Atis-GFP-NYC_5.jpg',
         address: ' 20 W 34th St, New York, NY 10001, United States',
         location: {
-            lat: 40.7484405,
-            long: -73.9878584
+            lat: 40.748817,
+            lng: -73.985428
         },
         creator: 'u1'
     },
@@ -22,8 +22,8 @@ const DUMMY_PLACES = [
         imageUrl: 'https://untappedcities.com/wp-content/uploads/2015/07/Flatiron-Building-Secrets-Roof-Basement-Elevator-Sonny-Atis-GFP-NYC_5.jpg',
         address: ' 20 W 34th St, New York, NY 10001, United States',
         location: {
-            lat: 40.7484405,
-            long: -73.9878584
+            lat: 40.748817,
+            lng: -73.985428
         },
         creator: 'u2'
     }
