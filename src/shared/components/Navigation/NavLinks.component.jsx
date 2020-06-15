@@ -8,7 +8,7 @@ const NavLinks = props => {
             <NavLink to="/" exact>All Users</NavLink>
         </li>
         <li>
-            <NavLink to="/ul/places">My Places</NavLink>
+            <NavLink to="/u1/places">My Places</NavLink>
         </li>
         <li>
             <NavLink to="/places/new">Add place</NavLink>
