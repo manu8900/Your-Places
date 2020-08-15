@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const placesRoutes = require('./routes/places-routes')
 
 const app = express();
+// middleware using the body parser should be created first then the middleware getting data
+app.use(bodyParser.json())
 
 //app.use is used to register middleware & we use this to register routes of place-routes.js as middleware.
 app.use('/api/places',placesRoutes); ///api/places/- enables us to access routes of places-routes.
