@@ -1,6 +1,7 @@
 const HttpError = require('../models/http-error');
 const uuid = require('uuid/v4');//v4 creates a unique id with timestamp in it.
 const { validationResult } = require('express-validator');
+const getCoordsForAddress = require('../util/location');
 
 let DUMMY_PLACES = [
     {
@@ -39,23 +40,30 @@ const getPlacesByUserId = (req, res, next) => {
     }
     res.json({ place });
 };
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
     /* ValidationResult method will return us a object if createPlace's 
     request body don't pass the check validation we have registered in 
     places routes as arguments.*/
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         console.log(errors);
-        throw new HttpError(
+        /* When working with async function we use next instead of throw. */
+     next(   new HttpError(
             'Invalid inputs passed,please check your data', 422
-        )
+        ));
     }
-    const { title, description, coordinates, address, creator } = req.body;
+    const { title, description, address, creator } = req.body;
+    let coordinates;
+    try{
+         coordinates = await getCoordsForAddress(address);
+        }catch(error){
+           return next(error); 
+        }
     const createdPlace = {
         id: uuid(),
         title,
         description,
-        location: coordinates,
+        location:coordinates,
         address,
         creator
     }
@@ -71,7 +79,7 @@ const updatePlace = (req, res, next) => {
         console.log(errors);
         throw new HttpError(
             'Invalid inputs passed,please check your data', 422
-        )
+        );
     }
     const { title, description } = req.body;
     const placeId = req.params.pid;
