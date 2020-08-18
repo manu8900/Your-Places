@@ -48,22 +48,22 @@ const createPlace = async (req, res, next) => {
     if (!errors.isEmpty()) {
         console.log(errors);
         /* When working with async function we use next instead of throw. */
-     next(   new HttpError(
+        return next(new HttpError(
             'Invalid inputs passed,please check your data', 422
         ));
     }
     const { title, description, address, creator } = req.body;
     let coordinates;
-    try{
-         coordinates = await getCoordsForAddress(address);
-        }catch(error){
-           return next(error); 
-        }
+    try {
+        coordinates = await getCoordsForAddress(address);
+    } catch (error) {
+        return next(error);
+    }
     const createdPlace = {
         id: uuid(),
         title,
         description,
-        location:coordinates,
+        location: coordinates,
         address,
         creator
     }

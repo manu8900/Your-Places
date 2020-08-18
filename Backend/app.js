@@ -1,6 +1,7 @@
 const express = require('express');
 //To parse body of incoming request
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require ('./routes/user-routes');
 const HttpError = require('./models/http-error');
@@ -35,6 +36,14 @@ app.use((error, req, res, next) => {
     res.json({ message: error.message || 'An unknown error occured!' })
 
 });
+/*Mongoose connect is async. & returns a promise if the conn. is established ie.
+    why we used  then & catch method */
 
-
-app.listen(5000);//port
+mongoose
+.connect('mongodb+srv://manu:PLpsQIncNz4Ba3e7@cluster0.rnk84.mongodb.net/places?retryWrites=true&w=majority')
+.then(()=>{
+    app.listen(5000);//port
+})
+.catch(err =>{
+    console.log(err);
+})
