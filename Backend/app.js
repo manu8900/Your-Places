@@ -40,7 +40,7 @@ app.use((error, req, res, next) => {
     why we used  then & catch method */
 
 mongoose
-.connect('mongodb+srv://manu:PLpsQIncNz4Ba3e7@cluster0.rnk84.mongodb.net/places?retryWrites=true&w=majority')
+.connect('mongodb+srv://manu:PLpsQIncNz4Ba3e7@cluster0.rnk84.mongodb.net/places?retryWrites=true&w=majority',{useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=>{
     app.listen(5000);//port
 })
