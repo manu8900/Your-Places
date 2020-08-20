@@ -1,21 +1,24 @@
-const uuid = require('uuid/v4');
 const HttpError = require('../models/http-error')
 const { validationResult } = require('express-validator')
 const User = require('../models/user');
 
 
-const DUMMY_USERS = [
-    {
-        id: 'u1',
-        name: 'Manu George',
-        email: 'test@test.com',
-        password: 'testers'
+const getUsers = async (req, res, next) => {
+    let users;
+    try {
+        /* -password will exclude password & return all 
+        other data from user model */
+        users = await User.find({}, '-password');
+    } catch (err) {
+        const error = new HttpError(
+            'Fetching users failed please try again later.',
+            500
+        );
+        return next(error);
     }
-]
-
-const getUsers = (req, res, next) => {
-    res.json({ users: DUMMY_USERS });
-};
+    /* find returns an array that's why used map before converting to obj */
+    res.json({ users: users.map(user => user.toObject({ getters: true })) });
+}
 
 const signup = async (req, res, next) => {
     const error = validationResult(req);
@@ -25,7 +28,7 @@ const signup = async (req, res, next) => {
         )
 
     }
-    const { name, email, password, places } = req.body;
+    const { name, email, password } = req.body;
     let existingUser;
     /* findOne method simply find one document matching the criteria*/
     try {
@@ -49,7 +52,7 @@ const signup = async (req, res, next) => {
         email,
         image: 'https://image.flaticon.com/icons/png/512/219/219970.png',
         password,
-        places
+        places:[]
     });
     try {
         await createdUser.save();
@@ -63,11 +66,25 @@ const signup = async (req, res, next) => {
     res.status(201).json({ user: createdUser.toObject({ getters: true }) });
 };
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
     const { email, password } = req.body;
-    const identifiedUser = DUMMY_USERS.find(u => u.email === email);
-    if (!identifiedUser || identifiedUser.password !== password) {
-        throw new HttpError('Could not find the user,Enter Valid Credentials', 401);
+    let existingUser;
+    /* findOne method simply find one document matching the criteria*/
+    try {
+        existingUser = await User.findOne({ email: email });
+    } catch (err) {
+        const error = new HttpError(
+            'Logging in failed please try again later',
+            500
+        )
+        return next(error);
+    }
+    if (!existingUser || existingUser.password !== password) {
+        const error = new HttpError(
+            'Invalid Credentials entered',
+            401
+        )
+        return next(error);
     }
     res.status(200).json({ message: 'Login Succesful!' });
 };

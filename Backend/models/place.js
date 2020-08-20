@@ -13,11 +13,11 @@ const placeSchema = new Schema({
     location: {
         lat: { type: Number, required: true },
         lng: { type: Number, required: true }
-    },
-    creator: { type: String, required: true }
+    },/*ref property allows relation between place schema & user schema */
+    creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' }
 });
 
 /* monggose.model returns a constructor function that takes two arg.
 first is the name of the model for eg. Place & second is the schema 
 instantiated.*/
-module.exports = mongoose.model('Place',placeSchema);
+module.exports = mongoose.model('Place', placeSchema);
