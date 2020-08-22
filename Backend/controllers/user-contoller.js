@@ -52,10 +52,10 @@ const signup = async (req, res, next) => {
         email,
         image: 'https://image.flaticon.com/icons/png/512/219/219970.png',
         password,
-        places:[]
+        places: []
     });
     try {
-        await createdUser.save();
+        await createdUser.save();//Saved data in database
     } catch (err) {
         const error = new HttpError(
             'Signing Up failed,please try again',

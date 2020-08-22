@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Boogaloo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Passion+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Khand:wght@300;400;500;600;700&display=swap'); */
 
 * {
   box-sizing: border-box;
@@ -6,6 +9,10 @@
 
 html {
   font-family: 'Open Sans', sans-serif;
+  /* font-family: 'Catamaran', sans-serif; */
+  /* font-family: 'Boogaloo', cursive; */
+  /* font-family: 'Khand', sans-serif; */
+
 }
 
 body {
