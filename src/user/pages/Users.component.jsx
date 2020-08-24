@@ -2,41 +2,34 @@ import React, { useEffect, useState } from 'react';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal.component';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner.component';
 import UsersList from '../components/UsersList.component';
-
+import { useHttpClient } from '../../shared/hooks/http-hook';
 
 const Users = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState();
     const [loadedUsers, setLoadedUsers] = useState();
+    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+
     useEffect(() => {
         /* Never use useEffect as async,only use promises.If 
         u want to use async await put the fetch inside a async func.  
         & useEffect will only rerenders the page when its certain 
         dependencies change. */
-        const sendRequest = async () => {
-            setIsLoading(true);
+        const fetchUsers = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/users');
-                const responseData = await response.json();
-                if (!response.ok) {
-                    throw new Error(responseData.message);
-                }
+                const responseData = await sendRequest(
+                    'http://localhost:5000/api/users'
+                );
                 setLoadedUsers(responseData.users);
-                setIsLoading(false);
-            } catch (err) {
-                setError(err.message);
-            }
-            setIsLoading(false);
+            } catch (err) { }
         };
-        sendRequest();
-    }, [])
+        fetchUsers();
+        /*Adding sendRequest as dependency useEffect 
+         specifies to use this function after rendering the page. */
+    }, [sendRequest])
 
-    const errorHandler = () => {
-        setError(null);
-    }
     return (
         <React.Fragment>
-            <ErrorModal error={error} onClear={errorHandler} />
+            <ErrorModal error={error} onClear={clearError} />
             {
                 isLoading && (
                     <div className="center">
