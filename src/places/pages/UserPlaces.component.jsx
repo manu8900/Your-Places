@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import PlaceLIst from '../components/PlaceList.component';
+import PlaceList from '../components/PlaceList.component';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal.component';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner.component';
 import { useHttpClient } from '../../shared/hooks/http-hook';
@@ -20,7 +20,9 @@ const UserPlaces = () => {
         }
         fetchPlaces();
     }, [sendRequest, userId]);
-
+ const placeDeletedHandler = (deletedPlaceId)=>{
+     setLoadedPlaces(prevPlaces => prevPlaces.filter(place =>place.id !== deletedPlaceId ))
+ }
     return (
         <React.Fragment>
             <ErrorModal error={error} onClear={clearError} />
@@ -29,7 +31,7 @@ const UserPlaces = () => {
                     <LoadingSpinner />
                 </div>
             )}
-            {!isLoading && loadedPlaces && <PlaceLIst items={loadedPlaces} />}
+            {!isLoading && loadedPlaces && <PlaceList items={loadedPlaces} onDeletePlace={placeDeletedHandler} />}
 
         </React.Fragment>
     )

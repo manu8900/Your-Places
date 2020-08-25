@@ -1,11 +1,11 @@
-import React, { useEffect, useState,useContext } from 'react';
-import { useParams,useHistory } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import Input from '../../shared/components/FormElements/Input.component';
 import Button from '../../shared/components/FormElements/Button.Component';
 import Card from '../../shared/components/UIElements/Card.component';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner.component';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal.component';
-import {AuthContext}from'../../shared/context/auth-context';
+import { AuthContext } from '../../shared/context/auth-context';
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../shared/util/Validators.js';
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
@@ -53,7 +53,7 @@ const UpdatePlace = () => {
           true
         );
 
-      } catch (err) {}
+      } catch (err) { }
     };
     fetchPlace();
   }, [sendRequest, placeId, setFormData]);
@@ -73,7 +73,7 @@ const UpdatePlace = () => {
         }
       );
       history.push('/' + auth.userId + '/places');
-    } catch (err) {}
+    } catch (err) { }
   };
 
   if (isLoading) {
