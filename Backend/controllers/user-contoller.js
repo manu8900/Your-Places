@@ -1,4 +1,6 @@
-const HttpError = require('../models/http-error')
+const HttpError = require('../models/http-error');
+//BcryptJs Library is for hashing & encrypting text.
+const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator')
 const User = require('../models/user');
 
@@ -47,11 +49,22 @@ const signup = async (req, res, next) => {
         );
         return next(error);
     }
+    let hashedPassword;
+    try {/*hash method contains value to hash & salt ie.strength of 
+        hash,salt value of 12 creates a strong hash value.*/
+        hashedPassword = await bcrypt.hash(password, 12);
+    } catch (err) {
+        const error = new HttpError(
+            'Could not create user,please try again ',
+            500
+        );
+        return next(error);
+    }
     const createdUser = new User({
         name,
         email,
         image: req.file.path,
-        password,
+        password:hashedPassword,//hashed password
         places: []
     });
     try {
