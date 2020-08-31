@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 //To parse body of incoming request
 const bodyParser = require('body-parser');
@@ -13,6 +15,8 @@ const app = express();
                 middleware using routes. */
 
 app.use(bodyParser.json());
+//express static just return a file.
+app.use('/uploads/images',express.static(path.join('uploads','images')));
 
 /* <---------------------------------------------------------------> */
 /* Middleware to resolve CORS(Cross Origin Resource Sharing) Error.  */
@@ -51,6 +55,12 @@ app.use((req, res, next) => {
 /* this middleware function express will apply on all request
                 that has an error parameter. */
 app.use((error, req, res, next) => {
+    if (req.file) {
+        //path is an object that multer adds to the file.
+        fs.unlink(req.file.path, err => {
+            console.log(err);
+        })
+    }
     /* headerSent property checks if any response is already sent. */
     if (res.headerSent) {
         return next(error);

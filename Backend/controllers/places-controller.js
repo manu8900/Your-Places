@@ -1,4 +1,5 @@
 const HttpError = require('../models/http-error');
+const fs = require('fs');
 // const uuid = require('uuid/v4');//v4 creates a unique id with timestamp in it.
 const { validationResult } = require('express-validator');
 const getCoordsForAddress = require('../util/location');
@@ -81,7 +82,7 @@ const createPlace = async (req, res, next) => {
         description,
         address,
         location: coordinates,
-        image: 'http://3.bp.blogspot.com/-ChgHNWjiuVk/Uf_qp8lqN7I/AAAAAAAACOc/J2RuNaBVkNY/s1600/Eiffel+tower.jpg',
+        image: req.file.path,
         creator
     });
     let user;
@@ -185,6 +186,7 @@ const deletePlace = async (req, res, next) => {
         return next(error);
     }
 
+    const imagePath = place.image;
     try {
         const sess = await mongoose.startSession();
         sess.startTransaction();
@@ -199,6 +201,9 @@ const deletePlace = async (req, res, next) => {
         );
         return next(error);
     }
+    fs.unlink(imagePath, err => {
+        console.log(err);
+    })
     res.status(200).json({ message: 'Deleted place' })
 }
 

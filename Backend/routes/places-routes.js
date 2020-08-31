@@ -1,6 +1,7 @@
 const express = require('express');
 const HttpError = require('../models/http-error');
 const placesControllers = require('../controllers/places-controller');
+const fileUpload = require('../middleware/file-upload');
 /* Express validator is used for validating the request body & is 
 imported using object destructuring coz we want to use only check
 method of express validaor here. */
@@ -17,6 +18,7 @@ below & using check method of express validator we are validating
 createPlace's body we are sending as request.*/
 router.post(
     '/',
+    fileUpload.single('image'),
     [
         check('title').not().isEmpty(),
         check('description').isLength({ min: 5 }),

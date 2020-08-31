@@ -53,19 +53,32 @@ const Auth = () => {
             }
         } else {
             try {
+                /*FormData is a browser API for which we don't need 
+               any 3rd party for this & used to append files & 
+               images.bcoz we can't add images or file in JSON data.*/
+                const formData = new FormData();
+                formData.append('email', formState.inputs.email.value);
+                formData.append('name', formState.inputs.name.value);
+                formData.append('password', formState.inputs.password.value);
+                formData.append('image', formState.inputs.image.value);
+
                 const responseData = await sendRequest(
                     'http://localhost:5000/api/users/signup',
                     'POST',
-                    JSON.stringify({
+                    /* when we use formdata fetch API automatically 
+                    adds right header so we don't need to specify it */
+                    formData,
+                    /*JSON.stringify({
                         name: formState.inputs.name.value,
                         email: formState.inputs.email.value,
                         password: formState.inputs.password.value
                     }),
                     {
-                        /* Without this body parser wont know which 
-                        type of data to send. */
+                        // Without this body parser wont know which 
+                        //type of data to send. 
                         'Content-Type': 'application/json',
-                    },
+                    }
+                    */
                 )
 
                 auth.login(responseData.user.id);
@@ -79,7 +92,7 @@ const Auth = () => {
             setFormData({
                 ...formState.inputs,
                 name: undefined,
-                image:undefined
+                image: undefined
 
             }, formState.inputs.email.isValid && formState.inputs.password.isValid)
         } else {
@@ -89,9 +102,9 @@ const Auth = () => {
                     value: '',
                     isValid: false
                 },
-                image:{
-                    value:null,
-                    isValid:false
+                image: {
+                    value: null,
+                    isValid: false
                 }
             }, false)
         }
@@ -116,8 +129,13 @@ const Auth = () => {
                             errorText="Please enter a name"
                             onInput={inputHandler}
                         />}
-                    {!isLoginMode && <ImageUpload id="image" center onInput={inputHandler}/>}
-                        <Input element="input"
+                    {!isLoginMode && <
+                        ImageUpload id="image"
+                        center
+                        onInput={inputHandler}
+                        errorText="Please provide an image."
+                    />}
+                    <Input element="input"
                         id="email"
                         type="email"
                         label="E-mail"
