@@ -105,7 +105,8 @@ const createPlace = async (req, res, next) => {
     }
 
     try {/*Remember to create collection manually
-        in your database when working with transaction*/
+        in your database by mongoDB atlas when working with 
+        transaction.*/
         const sess = await mongoose.startSession();
         sess.startTransaction();
         await createdPlace.save({ session: sess });

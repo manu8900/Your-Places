@@ -1,6 +1,8 @@
 const HttpError = require('../models/http-error');
 //BcryptJs Library is for hashing & encrypting text.
 const bcrypt = require('bcryptjs');
+//For Generating Jwt webtoken.
+const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator')
 const User = require('../models/user');
 
@@ -64,7 +66,7 @@ const signup = async (req, res, next) => {
         name,
         email,
         image: req.file.path,
-        password:hashedPassword,//hashed password
+        password: hashedPassword,//hashed password
         places: []
     });
     try {
@@ -76,7 +78,33 @@ const signup = async (req, res, next) => {
         );
         return next(error);
     }
-    res.status(201).json({ user: createdUser.toObject({ getters: true }) });
+
+    let token;
+    try{
+        token = jwt.sign(
+            {   //payload or data.
+                userId: createdUser.id, email: createdUser.email
+            }, //privatekey which is a string.
+            'supersecret_dont_share',
+            {   //duration of token.
+                expiresIn: '1h'
+            }
+        );
+    }catch(err){
+        const error = new HttpError(
+            'Signing Up failed,please try again',
+            500
+        );
+        return next(error);
+    }
+   
+    res.status(201).json({ 
+        userId:createdUser.id,
+        email:createdUser.email,
+        token:token 
+    });
+
+    // res.status(201).json({ user: createdUser.toObject({ getters: true }) });
 };
 
 const login = async (req, res, next) => {
@@ -92,19 +120,63 @@ const login = async (req, res, next) => {
         )
         return next(error);
     }
-    if (!existingUser || existingUser.password !== password) {
+    if (!existingUser) {
         const error = new HttpError(
-            'Invalid Credentials entered',
+            'Invalid Credentials entered,could not log you in.',
             401
         )
         return next(error);
     }
+
+    let isValidPassword = false;
+    try {//Comparing hashed password in database with text password. 
+        isValidPassword = await bcrypt.compare(password, existingUser.password);
+    } catch (err) {
+        const error = new HttpError(
+            'Could not log you in,Check your credentials & try again.',
+            500
+        );
+        return next(error);
+    }
+    if (!isValidPassword) {
+        const error = new HttpError(
+            'Invalid Credentials entered,could not log you in.',
+            401
+        )
+        return next(error);
+    }
+
+    let token;
+    try{
+        token = jwt.sign(
+            {   //payload or data.
+                userId: existingUser.id, email: existingUser.email
+            }, //privatekey which is a string.
+            'supersecret_dont_share',
+            {   //duration of token.
+                expiresIn: '1h'
+            }
+        );
+    }catch(err){
+        const error = new HttpError(
+            'Logging In failed,please try again',
+            500
+        );
+        return next(error);
+    }
     res.status(200).json(
         {
-            message: 'Login Succesful!',
-            user: existingUser.toObject({ getters: true })
+            userId:existingUser.id,
+            email:existingUser.email,
+            token:token
         }
     );
+    // res.status(200).json(
+    //     {
+    //         message: 'Login Succesful!',
+    //         user: existingUser.toObject({ getters: true })
+    //     }
+    // );
 };
 
 
